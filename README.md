@@ -201,4 +201,20 @@ window.onload = () => {
 };
 ```
 
+### Altere o "App.js" na pasta src do projeto, removendo as linhas de codigos de exemplo do React. Use o exemplo abaixo para um "Hello World":
+
+```
+import React from 'react';
+
+function App() {
+  return (
+    <div>
+      <h1>HELLO WORLD</h1>
+    </div>
+  );
+}
+
+export default App;
+```
+
 Tudo certo, inicie o projeto com ``npm start`` e quando finalizar basta executar ``npm run dist`` para ter o executavel da sua aplicação.
