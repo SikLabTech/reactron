@@ -23,22 +23,23 @@ Para desenvolver aplicações desktop utilizando dos conceitos do React, basta r
 
 Substitua os scripts por:
 
-``  
+```
 "scripts": {
     "build": "gulp build",
     "start": "gulp",
     "dist": "gulp dist"
 },
-``
+```
 
 E acrescente a linha:
-``
+
+```
 "main": "app/main.js"
-``
+```
 
 ### Crie o arquivo "gulpfile.js" na raiz do projeto com o seguinte codigo:
 
-``
+```
 const exec = require('child_process').exec;
 
 const gulp = require('gulp');
@@ -96,11 +97,11 @@ gulp.task('dist', gulp.series('build', () => {
         __dirname + '/node_modules/.bin/electron-builder .'
     ).on('close', () => process.exit());
 }));
-``
+```
 
 ### Crie o arquivo "main.js" na raiz do projeto com o seguinte codigo:
 
-``
+```
 const { app, BrowserWindow } = require('electron')
 var path = require('path');
 let mainWindow;
@@ -157,11 +158,11 @@ app.on('activate', () => {
     createWindow();
   }
 });
-``
+```
 
 ### Crie o arquivo "index.html" na pasta src do projeto com o seguinte codigo:
 
-``
+```
 <!DOCTYPE html>
 <html>
   <head>
@@ -173,11 +174,11 @@ app.on('activate', () => {
     <script src="./index.js"></script>
   </body>
 </html>
-``
+```
 
 ### Altere o index.js na pasta src do projeto para o seguinte codigo:
 
-``
+```
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -190,6 +191,6 @@ window.onload = () => {
         </Router>,
         document.getElementById('app'));
 };
-``
+```
 
 Tudo certo, inicie o projeto com ``npm start`` e quando finalizar basta executar ``npm run dist`` para ter o executavel da sua aplicação.
