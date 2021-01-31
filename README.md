@@ -11,7 +11,15 @@ Para desenvolver aplicações desktop utilizando dos conceitos do React, basta r
 
 ### Exclua os arquivos desnecessarios:
 
-
+```
+-- /public
+-- /src/App.css
+-- /src/App.test.js
+-- /src/index.css
+-- /src/logo.svg
+-- /src/reportWebVitals.js
+-- /src/setupTests.js
+```
 
 ### Instale as dependencias:
 
