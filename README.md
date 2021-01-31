@@ -1,70 +1,195 @@
-# Getting Started with Create React App
+# Reactron
+## Desenvolviemnto de aplicativo desktop (Windows, Linux e Mac) com o React e o Electron
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Atualizado de https://medium.com/totvsdevelopers/reactron-criando-um-aplicativo-com-o-react-e-o-electron-21062798dfee
 
-## Available Scripts
+Para desenvolver aplicações desktop utilizando dos conceitos do React, basta realizar as seguintes ações:
 
-In the project directory, you can run:
+### Inicie um projeto React.js:
 
-### `npm start`
+``npx create-react-app app``
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Exclua os arquivos desnecessarios:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Instale as dependencias:
 
-### `npm run build`
+``npm i electron electron-builder electron-react-devtools gulp gulp-babel gulp-clean-css gulp-concat gulp-livereload @babel/core @babel/plugin-proposal-class-properties @babel/preset-env @babel/preset-react babel-jest react-test-renderer -D``
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+``npm i electron-is-dev react-router-dom --save``
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Altere o "package.json":
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Substitua os scripts por:
 
-### `npm run eject`
+``  
+"scripts": {
+    "build": "gulp build",
+    "start": "gulp",
+    "dist": "gulp dist"
+},
+``
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+E acrescente a linha:
+``
+"main": "app/main.js"
+``
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Crie o arquivo "gulpfile.js" na raiz do projeto com o seguinte codigo:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+``
+const exec = require('child_process').exec;
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+const gulp = require('gulp');
+const babel = require('gulp-babel');
+const css = require('gulp-clean-css');
+const livereload = require('gulp-livereload');
 
-## Learn More
+gulp.task('copy', () => {
+    return gulp.src('assets/**/*')
+        .pipe(gulp.dest('app/assets'));
+});
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+gulp.task('html', () => {
+    return gulp.src('src/index.html')
+        .pipe(gulp.dest('app/'))
+        .pipe(livereload());
+});
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+gulp.task('css', () => {
+    return gulp.src('src/**/*.css')
+        .pipe(css())
+        .pipe(gulp.dest('app/'))
+        .pipe(livereload());
+});
 
-### Code Splitting
+gulp.task('js', () => {
+    return gulp.src(['main.js', 'src/**/*.js'])
+        .pipe(babel({
+            "presets": ["@babel/env", "@babel/react"],
+            "plugins": ["@babel/plugin-proposal-class-properties"]
+          }))
+        .pipe(gulp.dest('app/'))
+        .pipe(livereload());
+});
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+gulp.task('watch', async function () {
+    livereload.listen();
+    gulp.watch('src/**/*.html', gulp.series('html'));
+    gulp.watch('src/**/*.css', gulp.series('css'));
+    gulp.watch('src/**/*.js', gulp.series('js'));
+});
 
-### Analyzing the Bundle Size
+gulp.task('build', gulp.series('copy', 'html', 'css', 'js'));
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+gulp.task('start', gulp.series('build', () => {
+    return exec(
+        __dirname + '/node_modules/.bin/electron .'
+    ).on('close', () => process.exit());
+}));
 
-### Making a Progressive Web App
+gulp.task('default', gulp.parallel('start', 'watch'));
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+gulp.task('dist', gulp.series('build', () => {
+    return exec(
+        __dirname + '/node_modules/.bin/electron-builder .'
+    ).on('close', () => process.exit());
+}));
+``
 
-### Advanced Configuration
+### Crie o arquivo "main.js" na raiz do projeto com o seguinte codigo:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+``
+const { app, BrowserWindow } = require('electron')
+var path = require('path');
+let mainWindow;
 
-### Deployment
+exports.execProcess = (process, callback) => {
+  const { exec } = require('child_process');
+  const callExec = exec(process)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+  callExec.stdout.on('data', function (data) {
+    callback(data)
+  })
+  callExec.stderr.on('data', function (data) {
+    callback("<b>ERROR:</b> \n" + data)
+  })
+}
 
-### `npm run build` fails to minify
+const createWindow = () => {
+  mainWindow = new BrowserWindow({
+    width: 800,
+    height: 600,
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+    // Caracteristicas visuais da janela
+    // autoHideMenuBar: true,
+    // titleBarStyle: 'customButtonsOnHover',
+    frame: true, // Retira barra superior
+    useContentSize: false, // Inibe mostragem de dimensao da janela
+
+    webPreferences: {
+      nodeIntegration: true
+    }
+  });
+
+  mainWindow.loadURL(String(Object.assign(new URL(path.join(__dirname, 'index.html')), {
+    pathname: path.join(__dirname, 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  })));
+
+  mainWindow.on('closed', () => {
+    mainWindow = null;
+  });
+};
+
+app.on('ready', createWindow);
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+});
+
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow();
+  }
+});
+``
+
+### Crie o arquivo "index.html" na pasta src do projeto com o seguinte codigo:
+
+``
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+  </head>
+  <body>
+    <div id="app">
+    </div>
+    <script src="./index.js"></script>
+  </body>
+</html>
+``
+
+### Altere o index.js na pasta src do projeto para o seguinte codigo:
+
+``
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
+import App from './App.js';
+
+window.onload = () => {
+    ReactDOM.render(
+        <Router>
+            <App />
+        </Router>,
+        document.getElementById('app'));
+};
+``
+
+Tudo certo, inicie o projeto com ``npm start`` e quando finalizar basta executar ``npm run dist`` para ter o executavel da sua aplicação.
