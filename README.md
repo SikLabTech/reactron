@@ -1,7 +1,7 @@
 # Reactron
 ## Desenvolviemnto de aplicativo desktop (Windows, Linux e Mac) com o React e o Electron
 
-Atualizado de https://medium.com/totvsdevelopers/reactron-criando-um-aplicativo-com-o-react-e-o-electron-21062798dfee
+Esta é uma atualização, <a href="https://medium.com/totvsdevelopers/reactron-criando-um-aplicativo-com-o-react-e-o-electron-21062798dfee">click aqui para ver o post original</a>
 
 Para desenvolver aplicações desktop utilizando dos conceitos do React, basta realizar as seguintes ações:
 
