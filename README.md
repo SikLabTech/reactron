@@ -1,4 +1,11 @@
 # Reactron
+
+<div>
+  <img width="200px" src="https://avatars0.githubusercontent.com/u/70340698?s=200&v=4" />
+  <img width="200px" src="https://i.ibb.co/tbXqGLR/reactron.png" />
+</div>
+<br />
+
 ## Desenvolviemnto de aplicativo desktop (Windows, Linux e Mac) com o React e o Electron
 
 Esta é uma atualização, <a href="https://medium.com/totvsdevelopers/reactron-criando-um-aplicativo-com-o-react-e-o-electron-21062798dfee">click aqui para ver o post original</a>
