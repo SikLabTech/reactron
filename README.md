@@ -6,7 +6,7 @@
 </div>
 <br />
 
-## Desenvolviemnto de aplicativo desktop (Windows, Linux e Mac) com o React e o Electron
+## Desenvolvimento de aplicativo desktop (Windows, Linux e Mac) com o React e o Electron
 
 Esta é uma atualização, <a href="https://medium.com/totvsdevelopers/reactron-criando-um-aplicativo-com-o-react-e-o-electron-21062798dfee">click aqui para ver o post original</a>
 
